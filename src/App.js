@@ -1,59 +1,21 @@
-import { useState } from "react"
-
-const Filter = ({ keyword, handleKeywordChange }) => {
-    return (
-        <div>
-            filter shown with
-            <input value={keyword} onChange={handleKeywordChange} />
-        </div>
-    )
-}
-
-const Form = ({
-    handleSubmit,
-    newName,
-    handleNewNameChange,
-    newNumber,
-    handleNewNumberChange,
-}) => {
-    return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                name: <input value={newName} onChange={handleNewNameChange} />
-            </div>
-            <div>
-                number:
-                <input value={newNumber} onChange={handleNewNumberChange} />
-            </div>
-            <div>
-                <button type="submit">add</button>
-            </div>
-        </form>
-    )
-}
-
-const List = ({ persons }) => {
-    return (
-        <ul>
-            {persons.map((person) => (
-                <li key={person.name}>
-                    {person.name} {person.number}
-                </li>
-            ))}
-        </ul>
-    )
-}
+import { useState, useEffect } from "react"
+import axios from "axios"
+import Filter from "./components/Filter"
+import Form from "./components/Form"
+import List from "./components/List"
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        { name: "Arto Hellas", number: "040-123456", id: 1 },
-        { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-        { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-        { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-    ])
+    const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState("")
     const [newNumber, setNewNumber] = useState("")
     const [keyword, setKeyword] = useState("")
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:3001/persons")
+            .then((response) => response.data)
+            .then((persons) => setPersons(persons))
+    })
 
     const handleSubmit = (event) => {
         event.preventDefault()
